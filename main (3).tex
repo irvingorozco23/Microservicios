@@ -1,0 +1,159 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+
+% Configuración de márgenes
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+% Configuración para mostrar código
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+% Información del documento
+\title{\textbf{Documentación del Microservicio de Usuarios (FastAPI)}}
+\author{Equipo de Desarrollo}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Introducción}
+Este proyecto es un microservicio desarrollado en Python utilizando el framework FastAPI. Su objetivo principal es la gestión de usuarios, permitiendo operaciones básicas como crear y leer información de usuarios a través de una API RESTful.
+
+El proyecto sigue una arquitectura en capas (similar a la arquitectura hexagonal o limpia) para separar la lógica de negocio, la infraestructura y las interfaces externas, lo que facilita el mantenimiento y la escalabilidad.
+
+\section{Estructura del Proyecto}
+El proyecto está organizado en módulos que representan diferentes capas de responsabilidad.
+
+% IMAGEN 4: Árbol de directorios
+\begin{figure}[H]
+    \centering
+    % Asegúrate de que el nombre coincida con tu archivo subido
+    \includegraphics[width=0.6\textwidth]{estructura_proyecto.png}
+    \caption{Estructura de directorios del proyecto en Visual Studio Code.}
+    \label{fig:estructura}
+\end{figure}
+
+\subsection{Descripción de directorios clave}
+\begin{itemize}
+    \item \textbf{\texttt{app/domain/core}}: Contiene el núcleo de la lógica de negocio y las definiciones de datos (modelos). Aquí se define qué es un "Usuario" independientemente de la base de datos.
+    \item \textbf{\texttt{app/application}}: (Puertos) Define las interfaces que la aplicación utiliza para comunicarse con el exterior.
+    \item \textbf{\texttt{app/infraestructura}}:
+    \begin{itemize}
+        \item \textbf{\texttt{adapters}}: Implementaciones concretas de las interfaces (ej. conexión a base de datos).
+        \item \textbf{\texttt{api}}: Contiene los controladores (\texttt{controller.py}) que manejan las peticiones HTTP.
+    \end{itemize}
+    \item \textbf{Archivos Raíz}:
+    \begin{itemize}
+        \item \texttt{main.py}: Punto de entrada principal.
+        \item \texttt{Dockerfile}: Configuración para contenedorizar la aplicación.
+        \item \texttt{requirements.txt}: Lista de dependencias.
+    \end{itemize}
+\end{itemize}
+
+\section{Componentes Clave del Código}
+
+\subsection{Modelo de Datos (\texttt{models.py})}
+Este archivo define la estructura de los datos del usuario utilizando \textbf{Pydantic} para la validación de tipos.
+
+% IMAGEN 6: Código de models.py
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{codigo_modelos.png}
+    \caption{Definición de la clase Usuario en \texttt{models.py}.}
+\end{figure}
+
+La clase \texttt{Usuario} contiene los campos \texttt{idusuario} (opcional), \texttt{nombre} y \texttt{email}.
+
+\subsection{Controlador de la API (\texttt{controller.py})}
+Este archivo define las rutas (endpoints) relacionadas con los usuarios y maneja la lógica de las peticiones HTTP.
+
+% IMAGEN 7: Código de controller.py
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{codigo_controller.png}
+    \caption{Endpoints definidos en \texttt{controller.py}.}
+\end{figure}
+
+Se utiliza \texttt{APIRouter} para agrupar las rutas:
+\begin{itemize}
+    \item \textbf{POST /}: Crea un usuario y lo guarda en una lista temporal.
+    \item \textbf{GET /\{idusuario\}}: Devuelve los datos de un usuario específico.
+\end{itemize}
+
+\subsection{Punto de Entrada (\texttt{main.py})}
+Inicializa la aplicación FastAPI y conecta los routers.
+
+% IMAGEN 8: Código de main.py
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{codigo_main.png}
+    \caption{Configuración principal en \texttt{main.py}.}
+\end{figure}
+
+\section{Acceso a la API y Documentación}
+FastAPI genera documentación automática en \texttt{/docs}.
+
+\subsection{Vista General (Swagger UI)}
+La interfaz muestra todos los endpoints disponibles y sus esquemas.
+
+% IMAGEN 3: Swagger general
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{swagger_general.png}
+    \caption{Interfaz de Swagger UI con los endpoints disponibles.}
+\end{figure}
+
+\subsection{Prueba de Endpoint (POST)}
+Ejecución exitosa de creación de usuario.
+
+% IMAGEN 2: Resultado del POST
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{swagger_post.png}
+    \caption{Respuesta exitosa (201 Created) al crear un usuario.}
+\end{figure}
+
+% --- NUEVA SECCIÓN AÑADIDA ---
+\section{Repositorio del Proyecto}
+
+El código fuente completo de este microservicio, incluyendo la configuración de Docker y los archivos de entorno, se encuentra disponible en el siguiente repositorio de GitHub:
+
+\begin{center}
+    % SUSTITUYE EL ENLACE DE ABAJO POR EL TUYO
+    \url{https://github.com/irvingorozco23/Microservicios.git}
+\end{center}
+
+\end{document}
